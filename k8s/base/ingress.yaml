@@ -1,0 +1,39 @@
+# Single host: the SPA is served at "/", while API, OAuth and Swagger paths go to the backend.
+# Same-origin routing means session cookies + CSRF work without CORS.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devops-portal
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    # keep the alert SSE stream (/api/alerts/stream) open and unbuffered
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [portal.example.com]
+      secretName: devops-portal-tls
+  rules:
+    - host: portal.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend: { service: { name: devops-portal-backend, port: { number: 8080 } } }
+          - path: /oauth2
+            pathType: Prefix
+            backend: { service: { name: devops-portal-backend, port: { number: 8080 } } }
+          - path: /login/oauth2
+            pathType: Prefix
+            backend: { service: { name: devops-portal-backend, port: { number: 8080 } } }
+          - path: /swagger-ui
+            pathType: Prefix
+            backend: { service: { name: devops-portal-backend, port: { number: 8080 } } }
+          - path: /v3/api-docs
+            pathType: Prefix
+            backend: { service: { name: devops-portal-backend, port: { number: 8080 } } }
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: devops-portal-frontend, port: { number: 80 } } }

@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* Design tokens. Dark is the default; light overrides below. */
+:root,
+[data-theme='dark'] {
+  --bg: #0a0c10;
+  --panel: #0f1218;
+  --card: #141821;
+  --card-2: #1a1f2a;
+  --hover: #1e2430;
+  --border: #222834;
+  --border-strong: #2d3543;
+  --fg: #e7eaf0;
+  --muted: #8d95a6;
+  --subtle: #5e6676;
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --accent-soft: rgb(59 130 246 / 0.14);
+  --accent-fg: #ffffff;
+  --success: #22c55e;
+  --success-soft: rgb(34 197 94 / 0.13);
+  --warning: #f59e0b;
+  --warning-soft: rgb(245 158 11 / 0.14);
+  --danger: #ef4444;
+  --danger-soft: rgb(239 68 68 / 0.14);
+  --info: #38bdf8;
+  --info-soft: rgb(56 189 248 / 0.13);
+  --violet: #a78bfa;
+  --violet-soft: rgb(167 139 250 / 0.14);
+  --ring: rgb(59 130 246 / 0.45);
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --chart-grid: #1f2530;
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --card-2: #f6f7fa;
+  --hover: #eef1f5;
+  --border: #e3e7ee;
+  --border-strong: #d2d8e2;
+  --fg: #0f172a;
+  --muted: #5b6577;
+  --subtle: #8a93a3;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-soft: rgb(37 99 235 / 0.1);
+  --success: #16a34a;
+  --success-soft: rgb(22 163 74 / 0.1);
+  --warning: #d97706;
+  --warning-soft: rgb(217 119 6 / 0.1);
+  --danger: #dc2626;
+  --danger-soft: rgb(220 38 38 / 0.09);
+  --info: #0284c7;
+  --info-soft: rgb(2 132 199 / 0.1);
+  --violet: #7c3aed;
+  --violet-soft: rgb(124 58 237 / 0.1);
+  --ring: rgb(37 99 235 / 0.35);
+  --shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -16px rgb(15 23 42 / 0.18);
+  --chart-grid: #e8ecf2;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-card-2: var(--card-2);
+  --color-hover: var(--hover);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-violet: var(--violet);
+  --color-violet-soft: var(--violet-soft);
+  --color-ring: var(--ring);
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, monospace;
+  --shadow-card: var(--shadow);
+  --animate-fade-in: fade-in 0.18s ease-out;
+  --animate-slide-in: slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes slide-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; }
+  50% { box-shadow: 0 0 0 4px transparent; }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+  }
+  * {
+    border-color: var(--border);
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  input[type='date']::-webkit-calendar-picker-indicator,
+  input[type='datetime-local']::-webkit-calendar-picker-indicator {
+    filter: invert(var(--invert, 0.6));
+  }
+  [data-theme='light'] {
+    --invert: 0;
+  }
+}
+
+@layer components {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}

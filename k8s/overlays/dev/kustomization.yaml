@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+images:
+  - name: ghcr.io/your-org/devops-portal-frontend
+    newTag: dev
+patches:
+  - target: { kind: Ingress, name: devops-portal }
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: portal-dev.example.com
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: portal-dev.example.com
+  - target: { kind: Deployment, name: devops-portal-frontend }
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
