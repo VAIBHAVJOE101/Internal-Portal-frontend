@@ -21,7 +21,7 @@ export function AlertBell() {
   const { data: summary } = useQuery({ queryKey: ['alerts', 'summary'], queryFn: () => get<AlertSummary>('/alerts/summary') })
   const { data: latest } = useQuery({
     queryKey: ['alerts', 'bell'],
-    queryFn: () => get<PageResult<AlertItem>>('/alerts', { status: 'ACTIVE', size: 8 }),
+    queryFn: () => get<PageResult<AlertItem>>('/alerts', { status: 'FIRING', size: 8 }),
     enabled: open,
   })
 
@@ -34,7 +34,7 @@ export function AlertBell() {
       source.addEventListener('alert', (e) => {
         const alert = JSON.parse((e as MessageEvent).data) as AlertItem
         qc.invalidateQueries({ queryKey: ['alerts'] })
-        if (alert.status === 'OPEN' && alert.occurrences === 1 && alert.severity === 'CRITICAL') {
+        if (alert.justFired && alert.severity === 'CRITICAL') {
           toast.error(alert.title, { description: alert.resource })
         }
       })
@@ -81,7 +81,7 @@ export function AlertBell() {
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold">Active alerts</p>
+              <p className="text-sm font-semibold">Firing alerts</p>
               <span className={cn('size-1.5 rounded-full', live ? 'bg-success' : 'bg-subtle')} title={live ? 'Live' : 'Reconnecting'} />
             </div>
             <div className="flex gap-1.5">

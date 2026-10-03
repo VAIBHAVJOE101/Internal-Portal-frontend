@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Bell, CheckCircle2, Database, Eye, EyeOff, KeyRound, Lock, Plug, Plus, ShieldCheck, Trash2, XCircle } from 'lucide-react'
+import { CheckCircle2, Database, Eye, EyeOff, KeyRound, Lock, Mail, MessageSquare, Plug, Plus, ShieldCheck, Trash2, XCircle } from 'lucide-react'
 import { useEffect, useState, type ComponentType } from 'react'
 import { toast } from 'sonner'
 import { useCrumbs } from '@/components/layout/crumbs'
@@ -22,7 +22,8 @@ const ICONS: Record<string, ComponentType<{ className?: string }>> = {
   GITHUB: GithubIcon,
   AZURE_DEVOPS: BoardsIcon,
   COSMOS: Database,
-  NOTIFICATIONS: Bell,
+  EMAIL: Mail,
+  TEAMS: MessageSquare,
   KAFKA_CREDENTIAL: KeyRound,
 }
 

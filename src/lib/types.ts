@@ -281,6 +281,17 @@ export interface WorkItem {
   url?: string
   changedDate?: string
   rev: number
+  description?: string | null
+  acceptanceCriteria?: string | null
+  commentCount?: number | null
+}
+
+export interface WorkItemComment {
+  id: number
+  text: string
+  author: Person
+  createdDate: string
+  modifiedDate?: string | null
 }
 
 export interface Sprint {
@@ -426,24 +437,99 @@ export interface ApplyResult {
 
 export type Severity = 'CRITICAL' | 'WARNING' | 'INFO'
 
+export type AlertType =
+  | 'KAFKA_UNREACHABLE'
+  | 'KAFKA_BROKER_DOWN'
+  | 'KAFKA_UNDER_REPLICATED'
+  | 'KAFKA_OFFLINE_PARTITIONS'
+  | 'KAFKA_CONNECTOR_FAILED'
+  | 'KAFKA_CONNECT_UNREACHABLE'
+  | 'KAFKA_CONSUMER_LAG'
+  | 'CONNECTIVITY_FAILURE'
+  | 'CREDENTIAL_EXPIRY'
+
+export type AlertStatus = 'PENDING' | 'OPEN' | 'ACKNOWLEDGED' | 'RESOLVED'
+
 export interface AlertItem {
   id: number
+  type?: AlertType | null
+  typeLabel?: string | null
   source: string
   severity: Severity
   title: string
   message?: string
   resource?: string
-  status: 'OPEN' | 'ACKNOWLEDGED' | 'RESOLVED'
+  status: AlertStatus
   occurrences: number
   firstSeen: string
   lastSeen: string
+  firedAt?: string | null
+  clearedSince?: string | null
+  lastNotifiedAt?: string | null
+  nextNotifyAt?: string | null
+  notificationCount: number
+  escalationLevel: number
+  snoozedUntil?: string | null
+  snoozedBy?: string | null
+  reopenCount: number
   acknowledgedBy?: string
   acknowledgedAt?: string
   resolvedAt?: string
+  resolvedBy?: string | null
+  resolvedReason?: string | null
+  justFired?: boolean
+}
+
+export interface AlertEventItem {
+  id: number
+  alertId: number
+  ts: string
+  kind: string
+  channel?: string | null
+  success?: boolean | null
+  message?: string | null
+  actor?: string | null
+}
+
+export interface EscalationStep {
+  afterMinutes: number
+  emails: string[]
+  teams: boolean
+  raiseToCritical: boolean
+}
+
+export interface AlertPolicy {
+  type: AlertType
+  label: string
+  description: string
+  source: string
+  enabled: boolean
+  severity: Severity
+  minOccurrences: number
+  pendingSeconds: number
+  repeatMinutes: number
+  backoffMultiplier: number
+  maxRepeatMinutes: number
+  maxNotifications: number
+  notifyOnResolve: boolean
+  resolveGraceSeconds: number
+  staleMinutes: number
+  reopenWindowMinutes: number
+  emailEnabled: boolean
+  emailRecipients: string[]
+  teamsEnabled: boolean
+  escalation: EscalationStep[]
+  params: Record<string, number | string>
+  mutedUntil?: string | null
+  muteReason?: string | null
+  customized: boolean
+  updatedBy?: string | null
+  updatedAt?: string | null
 }
 
 export interface AlertSummary {
   active: number
+  pending: number
   critical: number
   warning: number
   info: number
@@ -474,7 +560,7 @@ export interface SettingField {
 
 export interface SettingView {
   key: string
-  type: 'GITHUB' | 'AZURE_DEVOPS' | 'COSMOS' | 'NOTIFICATIONS' | 'KAFKA_CREDENTIAL'
+  type: 'GITHUB' | 'AZURE_DEVOPS' | 'COSMOS' | 'EMAIL' | 'TEAMS' | 'KAFKA_CREDENTIAL'
   label: string
   fields: SettingField[]
   values: Record<string, string>
