@@ -16,12 +16,15 @@ React 19 + TypeScript + Vite + Tailwind CSS v4 UI for the internal Platform & De
 
 ## Develop
 
+Requires Node.js 20.12.2 (see `.nvmrc`).
+
 ```bash
 npm install
-npm run dev        # http://localhost:5173, proxies /api, /oauth2 and /login/oauth2 to http://localhost:8080
+npm run dev        # http://localhost:5173, proxies /devopsportal to http://localhost:8080
 ```
 
-Run the backend in mock mode (`./gradlew bootRun --args='--spring.profiles.active=mock'`) and sign in with `admin/admin` or `reader/reader`. Set `PORTAL_BACKEND_URL` to proxy to a different backend.
+The backend is served under `/devopsportal` (API at `/devopsportal/api`, OAuth at `/devopsportal/oauth2`); `BACKEND_PATH` in `src/lib/api.ts` holds the prefix.
+Run the backend in mock mode (`PORTAL_PROFILE=mock ./gradlew bootRun`) and sign in with `admin/admin` or `reader/reader`. Set `PORTAL_BACKEND_URL` to proxy to a different backend.
 
 ```bash
 npm run lint && npm run build
@@ -44,10 +47,15 @@ docker build -t ghcr.io/your-org/devops-portal-frontend:0.1.0 .
 kubectl apply -k k8s/overlays/prod
 ```
 
-The image is unprivileged nginx on port 8080 with SPA fallback. `k8s/base/ingress.yaml` routes on a single host:
+The image is unprivileged nginx on port 8080. It serves the SPA (with SPA fallback) and proxies `/devopsportal/` to the
+backend by its Service name, `BACKEND_URL` (default `http://devops-portal-backend:8080`, both apps in the same namespace).
+The browser therefore only talks to the frontend; proxy buffering is off so the alert stream works.
 
-- `/` goes to the frontend.
-- `/api`, `/oauth2`, `/login/oauth2`, `/swagger-ui` and `/v3/api-docs` go to `devops-portal-backend:8080`.
-- Proxy buffering is disabled so the alert stream works.
+Manifests in `k8s/base`:
 
-This base also creates the `devops-portal` namespace.
+- `frontend.yaml`: Deployment, HorizontalPodAutoscaler (2–5 replicas at 70% CPU) and Service.
+- `ingress.yaml`: Ingress sending everything on the host to the frontend Service.
+- `namespace.yaml`: the `devops-portal` namespace.
+
+Both files can also be applied directly (`kubectl apply -f k8s/base/frontend.yaml -f k8s/base/ingress.yaml`).
+Deploy the backend first: nginx resolves the backend Service name at startup.

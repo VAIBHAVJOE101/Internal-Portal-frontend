@@ -19,3 +19,8 @@ patches:
       - op: replace
         path: /spec/replicas
         value: 1
+  - target: { kind: HorizontalPodAutoscaler, name: devops-portal-frontend }
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 1

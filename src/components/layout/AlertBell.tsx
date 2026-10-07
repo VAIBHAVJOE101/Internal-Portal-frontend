@@ -6,7 +6,7 @@ import { Link } from 'react-router'
 import { toast } from 'sonner'
 import { Badge, toneFor } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/misc'
-import { get } from '@/lib/api'
+import { BACKEND_PATH, get } from '@/lib/api'
 import type { AlertItem, AlertSummary, PageResult } from '@/lib/types'
 import { cn, timeAgo } from '@/lib/utils'
 
@@ -29,7 +29,7 @@ export function AlertBell() {
     let source: EventSource | null = null
     let retry: ReturnType<typeof setTimeout> | undefined
     const connect = () => {
-      source = new EventSource('/api/alerts/stream', { withCredentials: true })
+      source = new EventSource(`${BACKEND_PATH}/api/alerts/stream`, { withCredentials: true })
       source.addEventListener('hello', () => setLive(true))
       source.addEventListener('alert', (e) => {
         const alert = JSON.parse((e as MessageEvent).data) as AlertItem
