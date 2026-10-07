@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router'
 import { GithubIcon } from '@/components/layout/icons'
 import { Button } from '@/components/ui/button'
 import { Field, Input } from '@/components/ui/input'
-import { api } from '@/lib/api'
+import { api, BACKEND_PATH } from '@/lib/api'
 import { usePublicInfo } from '@/lib/auth'
 import { cn } from '@/lib/utils'
 
@@ -137,7 +137,7 @@ export default function LoginPage() {
             </form>
           ) : (
             <div className="mt-6">
-              <Button variant="primary" size="lg" className="w-full" onClick={() => window.location.assign('/oauth2/authorization/github')}>
+              <Button variant="primary" size="lg" className="w-full" onClick={() => window.location.assign(`${BACKEND_PATH}/oauth2/authorization/github`)}>
                 <GithubIcon className="size-4.5" />
                 Continue with GitHub
               </Button>

@@ -8,6 +8,5 @@ labels:
     includeSelectors: true
 resources:
   - namespace.yaml
-  - deployment.yaml
-  - service.yaml
+  - frontend.yaml   # Deployment + HPA + Service
   - ingress.yaml

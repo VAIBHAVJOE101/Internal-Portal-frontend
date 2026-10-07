@@ -1,11 +1,17 @@
 import axios, { AxiosError } from 'axios'
 
 /**
+ * Path prefix of the Spring Boot backend. The browser always calls it on the same origin; nginx (or the Vite dev
+ * server) proxies it to the backend Service.
+ */
+export const BACKEND_PATH = '/devopsportal'
+
+/**
  * Axios instance for the portal BFF. Session cookie auth; Spring Security's XSRF-TOKEN cookie is
  * echoed back as the X-XSRF-TOKEN header automatically by axios for same-origin requests.
  */
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${BACKEND_PATH}/api`,
   withCredentials: true,
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
